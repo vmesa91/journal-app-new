@@ -1,22 +1,21 @@
 
 import { types } from "../types/types"
 import { firebase, googleAuthProvider } from "../firebase/firebase-config";
-/* export const login = (uid, displayName) => {
-    return {
-        type: types.login,
-        payload: {
-            uid,
-            displayName
-        }
-    }
-}  ES LO MISMO QUE : (Un único argumento el return) */
+import { finishLoading, startLoading } from "./ui";
 
 
 export const startLoginEmailPassword = (email, password) => {
     return (dispatch) => {
-        setTimeout(() => {
-            dispatch( login(password, email) )
-        }, 3500);
+        dispatch ( startLoading() )
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        .then( ( { user } ) => {
+            dispatch( login(user.uid, user.displayName) )
+            dispatch ( finishLoading() )
+        })
+        .catch( e => {
+            console.log(e)
+            dispatch ( finishLoading() )
+        }) 
     }
 }
 
@@ -45,6 +44,15 @@ export const startRegisterWithEmailPasswordName = ( email, password, name) => {
     }
 }
 
+/* export const login = (uid, displayName) => {
+    return {
+        type: types.login,
+        payload: {
+            uid,
+            displayName
+        }
+    }
+}  ES LO MISMO QUE : (Un único argumento el return) */
 export const login = (uid, displayName) => 
 (     {
         type: types.login,
