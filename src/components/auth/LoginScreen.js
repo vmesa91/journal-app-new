@@ -1,15 +1,17 @@
 import React from 'react'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from 'react-router-dom'
-import { login } from '../../actions/auth';
+import { startGoogleLogin, startLoginEmailPassword } from '../../actions/auth';
 import useForm from '../../hooks/useForm'
 
 export const LoginScreen = () => {
 
   const dispatch = useDispatch()
 
+  const { loading } = useSelector( state => state.ui )
+
   const [formValues, handleInputChange] = useForm({
-     email: 'v.mesagetafe@gmail.com',
+     email: 'v@gmail.com',
      password: '123456'
   })
 
@@ -17,9 +19,13 @@ export const LoginScreen = () => {
 
   const handleLogin = (e) => {
     e.preventDefault()
-    dispatch( login(123456, 'Virginia') )
+    dispatch( startLoginEmailPassword(email, password) )
     console.log (email, password)
+  }
 
+  const handleGoogleLogin = (e) => {
+    e.preventDefault()
+    dispatch( startGoogleLogin() )
   }
  
 
@@ -37,7 +43,7 @@ export const LoginScreen = () => {
           onChange={ handleInputChange }
           />
           <input
-          type='text'
+          type='password'
           placeholder='Password'
           name='password'
           className='auth__input'
@@ -45,7 +51,7 @@ export const LoginScreen = () => {
           onChange={ handleInputChange }
           />
 
-          <button className='btn btn-primary btn-block'
+          <button className='btn btn-primary btn-block' disabled={ loading }
           type='submit'
           >Login
           </button>
@@ -54,7 +60,7 @@ export const LoginScreen = () => {
 
           <div className='auth__social-networks'>
             <p>Login with Social Networks</p>
-              <div className="google-btn">
+              <div className="google-btn" onClick={ handleGoogleLogin }>
                   <div className="google-icon-wrapper">
                   <img className="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="google button" />
               </div>
